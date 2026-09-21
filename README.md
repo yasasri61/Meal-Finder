@@ -104,4 +104,12 @@ The API returns JSON and can be tested from a browser, Postman, or JavaScript.
 
 Meal images in the seed data use remote Unsplash URLs. The application still works without them and displays a styled fallback when an image is unavailable.
 
-For production, switch `DEBUG=False`, configure `ALLOWED_HOSTS`, use PostgreSQL, set a secure secret key through environment variables, configure static/media storage, and use HTTPS.
+For production, set these environment variables before deployment:
+
+```text
+DEBUG=False
+DJANGO_SECRET_KEY=<a-long-random-secret>
+ALLOWED_HOSTS=your-domain.example
+```
+
+Vercel supplies `VERCEL_URL` automatically. The project also allows the current Vercel domain, `mealfinder-olive.vercel.app`, by default. For production, use PostgreSQL, configure static/media storage, and use HTTPS.

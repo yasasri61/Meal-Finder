@@ -1,10 +1,24 @@
+import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = "django-insecure-mealfinder-development-key-change-in-production"
-DEBUG = True
-ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+SECRET_KEY = os.getenv(
+    "DJANGO_SECRET_KEY",
+    "django-insecure-mealfinder-development-key-change-in-production",
+)
+DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
+
+configured_hosts = os.getenv("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", "mealfinder-olive.vercel.app"]
+ALLOWED_HOSTS += [
+    host.strip()
+    for host in configured_hosts.split(",")
+    if host.strip()
+]
+vercel_url = os.getenv("VERCEL_URL")
+if vercel_url:
+    ALLOWED_HOSTS.append(vercel_url.removeprefix("https://").removeprefix("http://"))
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -81,6 +95,10 @@ LOGIN_REDIRECT_URL = "home"
 LOGOUT_REDIRECT_URL = "home"
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+CSRF_TRUSTED_ORIGINS = ["https://mealfinder-olive.vercel.app"]
+if vercel_url:
+    CSRF_TRUSTED_ORIGINS.append(f"https://{vercel_url.removeprefix('https://').removeprefix('http://')}")
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
