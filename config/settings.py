@@ -10,7 +10,7 @@ SECRET_KEY = os.getenv(
 DEBUG = os.getenv("DEBUG", "False").lower() in {"1", "true", "yes"}
 
 configured_hosts = os.getenv("ALLOWED_HOSTS", "")
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "mealfinder-olive.vercel.app"]
+ALLOWED_HOSTS = ["127.0.0.1", "localhost", ".vercel.app"]
 ALLOWED_HOSTS += [
     host.strip()
     for host in configured_hosts.split(",")
@@ -96,7 +96,7 @@ LOGOUT_REDIRECT_URL = "home"
 
 CORS_ALLOW_ALL_ORIGINS = True
 
-CSRF_TRUSTED_ORIGINS = ["https://mealfinder-olive.vercel.app"]
+CSRF_TRUSTED_ORIGINS = ["https://*.vercel.app"]
 if vercel_url:
     CSRF_TRUSTED_ORIGINS.append(f"https://{vercel_url.removeprefix('https://').removeprefix('http://')}")
 
