@@ -112,4 +112,4 @@ DJANGO_SECRET_KEY=<a-long-random-secret>
 ALLOWED_HOSTS=your-domain.example
 ```
 
-Vercel supplies `VERCEL_URL` automatically. The project also allows the current Vercel domain, `mealfinder-olive.vercel.app`, by default. For production, use PostgreSQL, configure static/media storage, and use HTTPS.
+Vercel supplies `VERCEL_URL` automatically. The Vercel build runs migrations, seeds demo data, and collects static files. SQLite storage on Vercel is temporary, so use PostgreSQL for persistent users, favorites, and reviews in production.
