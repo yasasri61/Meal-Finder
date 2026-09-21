@@ -1,0 +1,5 @@
+{% extends "base.html" %}
+{% block title %}Create Account — MealFinder{% endblock %}
+{% block content %}
+<div class="auth-page"><div class="auth-card"><span class="eyebrow">JOIN MEALFINDER</span><h1>Create your account</h1><p class="text-secondary">Save favorites and share your food discoveries.</p><form method="post">{% csrf_token %}{{ form.non_field_errors }}{% for field in form %}<div class="mb-3"><label class="form-label">{{ field.label }}</label>{{ field }}{% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}</div>{% endfor %}<button class="btn btn-primary w-100 rounded-pill py-2">Create Account</button></form><p class="text-center mt-4 mb-0">Already have an account? <a href="{% url 'login' %}">Sign in</a></p></div></div>
+{% endblock %}

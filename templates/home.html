@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}MealFinder — Find Your Perfect Meal{% endblock %}
+{% block content %}
+<section class="hero">
+    <div class="container position-relative">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-7">
+                <span class="eyebrow">YOUR NEXT FAVORITE MEAL</span>
+                <h1>Good food starts with <span>one search.</span></h1>
+                <p class="hero-copy">Discover recipes by cuisine, ingredients, cooking time, or simply by what you are craving today.</p>
+                <form action="{% url 'meal_list' %}" class="hero-search">
+                    <span>⌕</span><input name="search" placeholder="Search meals, ingredients, cuisines..." aria-label="Search meals"><button>Find Meals</button>
+                </form>
+                <div class="hero-links">
+                    <a href="{% url 'ingredient_finder' %}">✦ Cook with what I have</a>
+                    <a href="{% url 'meal_list' %}">Explore all meals →</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="hero-art">
+                    <div class="hero-circle"></div>
+                    <div class="floating-card card-one">🍝<strong> Pasta Night</strong><small>25 min · Easy</small></div>
+                    <div class="floating-card card-two">🥗<strong> Fresh & Light</strong><small>Healthy picks</small></div>
+                    <div class="plate">🍛</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container section-space">
+    <div class="section-head"><div><span class="eyebrow">BROWSE</span><h2>What are you in the mood for?</h2></div><a href="{% url 'meal_list' %}">View all →</a></div>
+    <div class="category-grid">
+        {% for category in categories %}
+        <a class="category-chip" href="{% url 'meal_list' %}?category={{ category.name|urlencode }}">
+            <span>{{ forloop.counter|divisibleby:2|yesno:"🥗,🍴" }}</span>{{ category.name }}
+        </a>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container section-space">
+    <div class="section-head"><div><span class="eyebrow">EDITOR'S PICKS</span><h2>Popular right now</h2></div><a href="{% url 'meal_list' %}">Explore →</a></div>
+    <div class="row g-4">
+        {% for meal in featured %}
+        <div class="col-sm-6 col-lg-3">{% include "partials/meal_card.html" with meal=meal %}</div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="container section-space">
+    <div class="finder-banner">
+        <div><span class="eyebrow">SMART MEAL FINDER</span><h2>Tell us what is in your fridge.</h2><p>We'll rank meals by how closely they match the ingredients you already have.</p></div>
+        <a href="{% url 'ingredient_finder' %}" class="btn btn-light rounded-pill px-4">Try Ingredient Finder →</a>
+    </div>
+</section>
+{% endblock %}

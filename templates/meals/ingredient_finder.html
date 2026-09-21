@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Ingredient Finder — MealFinder{% endblock %}
+{% block content %}
+<div class="container section-space">
+    <div class="finder-header">
+        <span class="eyebrow">SMART SEARCH</span>
+        <h1>What's in your fridge?</h1>
+        <p>Enter ingredients separated by commas. We'll rank meals based on ingredient matches.</p>
+        <form class="ingredient-search" method="get"><input name="ingredients" value="{{ query }}" placeholder="e.g. chicken, rice, onion, tomato"><button class="btn btn-primary">Find Meals</button></form>
+        <small>Tip: try <strong>chicken, rice, onion</strong></small>
+    </div>
+
+    {% if query %}
+    <div class="section-head mt-5"><div><span class="eyebrow">MATCH RESULTS</span><h2>Meals for your ingredients</h2></div><span class="text-secondary">{{ results|length }} result{{ results|length|pluralize }}</span></div>
+    {% if results %}
+    <div class="row g-4">{% for result in results %}<div class="col-md-6 col-lg-4"><article class="match-card">{% if result.meal.image_url %}<img src="{{ result.meal.image_url }}" alt="{{ result.meal.name }}">{% endif %}<div class="p-4"><div class="match-score">{{ result.score }}% match</div><h3>{{ result.meal.name }}</h3><p>{{ result.meal.description|truncatechars:100 }}</p><div class="small text-secondary">Matched: {% for item in result.matches %}{{ item }}{% if not forloop.last %}, {% endif %}{% endfor %}</div><a href="{% url 'meal_detail' result.meal.pk %}" class="btn btn-outline-dark rounded-pill mt-3">View recipe →</a></div></article></div>{% endfor %}</div>
+    {% else %}<div class="empty-state"><div>🧊</div><h3>No matching meals yet</h3><p>Try broader ingredients like chicken, rice, pasta, tomato or onion.</p></div>{% endif %}
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}My Favorites — MealFinder{% endblock %}
+{% block content %}
+<div class="container section-space">
+    <div class="page-intro"><span class="eyebrow">YOUR COLLECTION</span><h1>Saved favorites ♥</h1><p>Your go-to recipes in one place.</p></div>
+    {% if favorites %}
+    <div class="row g-4">{% for favorite in favorites %}<div class="col-sm-6 col-lg-4">{% include "partials/meal_card.html" with meal=favorite.meal %}</div>{% endfor %}</div>
+    {% else %}<div class="empty-state"><div>♡</div><h3>Your favorites are waiting</h3><p>Save meals you love and they'll appear here.</p><a href="{% url 'meal_list' %}" class="btn btn-primary rounded-pill">Explore Meals</a></div>{% endif %}
+</div>
+{% endblock %}

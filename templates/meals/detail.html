@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}{{ meal.name }} — MealFinder{% endblock %}
+{% block content %}
+<div class="container section-space">
+    <a href="{% url 'meal_list' %}" class="back-link">← Back to meals</a>
+    <div class="row g-5 align-items-start mt-1">
+        <div class="col-lg-6">
+            <div class="detail-image">
+                {% if meal.image_url %}<img src="{{ meal.image_url }}" alt="{{ meal.name }}">{% else %}<div class="image-fallback">🍽️</div>{% endif %}
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <span class="eyebrow">{{ meal.category.name }} · {{ meal.cuisine }}</span>
+            <h1 class="detail-title">{{ meal.name }}</h1>
+            <div class="d-flex gap-3 align-items-center mb-3"><span class="rating large">★ {{ meal.rating }}</span><span class="muted">·</span><span>⏱ {{ meal.cooking_time }} minutes</span><span>·</span><span>{{ meal.difficulty }}</span></div>
+            <p class="lead text-secondary">{{ meal.description }}</p>
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'toggle_favorite' meal.pk %}" class="mb-4">
+                {% csrf_token %}<button class="btn {% if is_favorite %}btn-dark{% else %}btn-outline-dark{% endif %} rounded-pill px-4">{% if is_favorite %}♥ Saved{% else %}♡ Save to Favorites{% endif %}</button>
+            </form>
+            {% else %}<a href="{% url 'login' %}?next={{ request.path }}" class="btn btn-outline-dark rounded-pill px-4 mb-4">Login to save</a>{% endif %}
+            <div class="stat-strip"><div><strong>{{ meal.ingredients|length }}</strong><span>Ingredients</span></div><div><strong>{{ meal.cooking_time }}</strong><span>Minutes</span></div><div><strong>{{ meal.difficulty }}</strong><span>Difficulty</span></div></div>
+        </div>
+    </div>
+
+    <div class="row g-5 mt-4">
+        <div class="col-lg-5"><div class="content-panel"><span class="eyebrow">WHAT YOU NEED</span><h2>Ingredients</h2><ul class="ingredient-list">{% for item in meal.ingredients %}<li><span>✓</span>{{ item|capfirst }}</li>{% endfor %}</ul></div></div>
+        <div class="col-lg-7"><div class="content-panel"><span class="eyebrow">HOW TO MAKE IT</span><h2>Instructions</h2><ol class="instruction-list">{% for step in meal.instructions %}<li><span>{{ forloop.counter }}</span><p>{{ step }}</p></li>{% endfor %}</ol></div></div>
+    </div>
+
+    <section class="mt-5">
+        <div class="section-head"><div><span class="eyebrow">COMMUNITY</span><h2>Reviews</h2></div></div>
+        {% for review in reviews %}<div class="review"><div class="review-top"><strong>{{ review.user.first_name|default:review.user.username }}</strong><span class="rating">★ {{ review.rating }}</span></div><p>{{ review.comment }}</p><small>{{ review.created_at|date:"M d, Y" }}</small></div>{% empty %}<p class="text-secondary">No reviews yet. Be the first to share your thoughts.</p>{% endfor %}
+        {% if user.is_authenticated %}
+        <div class="review-form mt-4"><h3>Leave a review</h3><form method="post" action="{% url 'add_review' meal.pk %}">{% csrf_token %}<div class="row g-3"><div class="col-md-3"><label class="form-label">Rating</label><select name="rating" class="form-select"><option value="5">5 — Excellent</option><option value="4">4 — Great</option><option value="3">3 — Good</option><option value="2">2 — Fair</option><option value="1">1 — Poor</option></select></div><div class="col-md-9"><label class="form-label">Comment</label><textarea name="comment" class="form-control" rows="3" maxlength="500" placeholder="What did you think?"></textarea></div></div><button class="btn btn-primary rounded-pill mt-3 px-4">Submit Review</button></form></div>
+        {% else %}<p class="text-secondary">Want to review this meal? <a href="{% url 'login' %}?next={{ request.path }}">Log in</a>.</p>{% endif %}
+    </section>
+</div>
+{% endblock %}

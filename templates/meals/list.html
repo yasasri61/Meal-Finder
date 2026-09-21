@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block title %}Explore Meals — MealFinder{% endblock %}
+{% block content %}
+<div class="container section-space">
+    <div class="page-intro">
+        <span class="eyebrow">EXPLORE</span>
+        <h1>Find something delicious.</h1>
+        <p>Search, filter and discover your next meal.</p>
+    </div>
+    <form class="filter-panel" method="get">
+        <div class="search-row"><input name="search" value="{{ search }}" placeholder="Search by meal, cuisine or ingredient..."><button class="btn btn-primary">Search</button></div>
+        <div class="row g-2 mt-1">
+            <div class="col-md-3"><select name="category" class="form-select"><option value="">All categories</option>{% for c in categories %}<option {% if selected_category == c.name %}selected{% endif %}>{{ c.name }}</option>{% endfor %}</select></div>
+            <div class="col-md-3"><select name="cuisine" class="form-select"><option value="">All cuisines</option>{% for c in cuisines %}<option {% if selected_cuisine == c %}selected{% endif %}>{{ c }}</option>{% endfor %}</select></div>
+            <div class="col-md-3"><select name="max_time" class="form-select"><option value="">Any cooking time</option><option value="15" {% if selected_max_time == "15" %}selected{% endif %}>Under 15 min</option><option value="30" {% if selected_max_time == "30" %}selected{% endif %}>Under 30 min</option><option value="45" {% if selected_max_time == "45" %}selected{% endif %}>Under 45 min</option></select></div>
+            <div class="col-md-3"><select name="difficulty" class="form-select"><option value="">Any difficulty</option>{% for d in "Easy,Medium,Hard"|make_list %}{% endfor %}<option value="Easy" {% if selected_difficulty == "Easy" %}selected{% endif %}>Easy</option><option value="Medium" {% if selected_difficulty == "Medium" %}selected{% endif %}>Medium</option><option value="Hard" {% if selected_difficulty == "Hard" %}selected{% endif %}>Hard</option></select></div>
+        </div>
+        <div class="text-end mt-3"><a href="{% url 'meal_list' %}" class="clear-link">Clear filters</a></div>
+    </form>
+
+    {% if page_obj.object_list %}
+    <div class="row g-4 mt-2">
+        {% for meal in page_obj %}
+        <div class="col-sm-6 col-lg-4">{% include "partials/meal_card.html" with meal=meal %}</div>
+        {% endfor %}
+    </div>
+    <nav class="mt-5"><ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}&search={{ search|urlencode }}&category={{ selected_category|urlencode }}&cuisine={{ selected_cuisine|urlencode }}">Previous</a></li>{% endif %}
+        <li class="page-item active"><span class="page-link">{{ page_obj.number }}</span></li>
+        {% if page_obj.has_next %}<li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}&search={{ search|urlencode }}&category={{ selected_category|urlencode }}&cuisine={{ selected_cuisine|urlencode }}">Next</a></li>{% endif %}
+    </ul></nav>
+    {% else %}
+    <div class="empty-state"><div>🍽️</div><h3>No meals found</h3><p>Try a different search or clear your filters.</p><a href="{% url 'meal_list' %}" class="btn btn-primary rounded-pill">Show all meals</a></div>
+    {% endif %}
+</div>
+{% endblock %}
